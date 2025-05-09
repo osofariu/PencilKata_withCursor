@@ -1,0 +1,24 @@
+{
+  "name": "pencil",
+  "version": "1.0.0",
+  "description": "Pencil kata with AI",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "lint": "eslint 'src/**/*.{ts,tsx}'",
+    "pretest": "npm run lint"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/preset-typescript": "^7.27.1",
+    "@eslint/js": "^9.26.0",
+    "eslint": "^9.26.0",
+    "globals": "^16.1.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.3.2",
+    "tslint": "^5.20.1",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.32.0"
+  }
+}
