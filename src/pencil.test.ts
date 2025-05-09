@@ -97,4 +97,89 @@ describe("Pencil", () => {
       expect(pencil.getDurability()).toBe(actualDurability);
     });
   });
+
+  describe("erase", () => {
+    it("should erase text from paper by replacing with spaces", () => {
+      const pencil = new Pencil();
+      const paper = "Hello World";
+
+      const result = pencil.erase(paper, "World");
+
+      expect(result).toBe("Hello      ");
+    });
+
+    it("should erase the last occurrence of the text", () => {
+      const pencil = new Pencil();
+      const paper =
+        "How much wood would a woodchuck chuck if a woodchuck could chuck wood?";
+
+      let result = pencil.erase(paper, "chuck");
+      expect(result).toBe(
+        "How much wood would a woodchuck chuck if a woodchuck could       wood?"
+      );
+
+      result = pencil.erase(result, "chuck");
+      expect(result).toBe(
+        "How much wood would a woodchuck chuck if a wood      could       wood?"
+      );
+    });
+
+    it("should do nothing if the text to erase is not found", () => {
+      const pencil = new Pencil();
+      const paper = "Hello World";
+
+      const result = pencil.erase(paper, "Planet");
+
+      expect(result).toBe("Hello World");
+    });
+
+    it("should handle case sensitivity correctly", () => {
+      const pencil = new Pencil();
+      const paper = "Hello World";
+
+      const result = pencil.erase(paper, "world");
+
+      expect(result).toBe("Hello World");
+    });
+  });
+
+  describe("eraser degradation", () => {
+    it("should degrade eraser durability when erasing", () => {
+      const pencil = new Pencil(100, 10, 5);
+      expect(pencil.getEraserDurability()).toBe(5);
+
+      pencil.erase("Hello World", "World");
+      expect(pencil.getEraserDurability()).toBe(0);
+    });
+
+    it("should degrade by 1 for each non-whitespace character", () => {
+      const pencil = new Pencil(100, 10, 10);
+      pencil.erase("Hello World", "World");
+      expect(pencil.getEraserDurability()).toBe(5); // "World" has 5 non-whitespace chars
+    });
+
+    it("should not degrade for whitespace characters", () => {
+      const pencil = new Pencil(100, 10, 5);
+      pencil.erase("Hello World", "o W");
+      expect(pencil.getEraserDurability()).toBe(3); // "o W" has 2 non-whitespace chars
+    });
+
+    it("should partially erase if durability runs out", () => {
+      const pencil = new Pencil(100, 10, 3);
+      const paper = "Buffalo Bill";
+
+      const result = pencil.erase(paper, "Bill");
+      expect(result).toBe("Buffalo B   ");
+      expect(pencil.getEraserDurability()).toBe(0);
+    });
+
+    it("should not erase at all if durability is 0", () => {
+      const pencil = new Pencil(100, 10, 0);
+      const paper = "Hello World";
+
+      const result = pencil.erase(paper, "World");
+      expect(result).toBe("Hello World");
+      expect(pencil.getEraserDurability()).toBe(0);
+    });
+  });
 });
