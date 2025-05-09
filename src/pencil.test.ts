@@ -35,7 +35,7 @@ describe("Pencil", () => {
       const pencil = new Pencil(4);
       const result = pencil.write("", "text that is too long");
 
-      expect(result).toBe("text         ");
+      expect(result).toBe("text                 ");
     });
 
     it("should degrade by 1 for lowercase letters", () => {
@@ -58,6 +58,43 @@ describe("Pencil", () => {
       pencil.write("", "a b\nc");
 
       expect(pencil.getDurability()).toBe(2);
+    });
+  });
+
+  describe("sharpen", () => {
+    it("should restore the pencil's initial point durability", () => {
+      const pencil = new Pencil(10, 2);
+      pencil.write("", "text");
+      expect(pencil.getDurability()).toBe(6);
+
+      pencil.sharpen();
+      expect(pencil.getDurability()).toBe(10);
+    });
+
+    it("should reduce the pencil's length by one", () => {
+      const pencil = new Pencil(10, 2);
+      expect(pencil.getLength()).toBe(2);
+
+      pencil.sharpen();
+      expect(pencil.getLength()).toBe(1);
+    });
+
+    it("should not restore point durability when length is zero", () => {
+      const pencil = new Pencil(10, 1);
+      pencil.write("", "text"); // Durability now 6
+      expect(pencil.getDurability()).toBe(6);
+
+      pencil.sharpen(); // Length becomes 0
+      expect(pencil.getLength()).toBe(0);
+
+      // Use more durability
+      pencil.write("", "mor"); // 6 - 3 = 3 durability left
+
+      // Check actual durability after writing "mor"
+      const actualDurability = pencil.getDurability();
+
+      pencil.sharpen(); // Should not restore durability
+      expect(pencil.getDurability()).toBe(actualDurability);
     });
   });
 });
