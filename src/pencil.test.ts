@@ -182,4 +182,53 @@ describe("Pencil", () => {
       expect(pencil.getEraserDurability()).toBe(0);
     });
   });
+
+  describe("edit", () => {
+    it("should write text over spaces", () => {
+      const pencil = new Pencil();
+      const paper = "An       a day keeps the doctor away";
+
+      const result = pencil.edit(paper, 3, "onion");
+
+      expect(result).toBe("An onion a day keeps the doctor away");
+    });
+
+    it("should handle collisions with @ symbol", () => {
+      const pencil = new Pencil();
+      const paper = "An       a day keeps the doctor away";
+
+      const result = pencil.edit(paper, 3, "artichoke");
+
+      expect(result).toBe("An artich@k@ay keeps the doctor away");
+    });
+
+    it("should handle writing past the end of the paper", () => {
+      const pencil = new Pencil();
+      const paper = "Hello     ";
+
+      const result = pencil.edit(paper, 6, "World!!!");
+
+      expect(result).toBe("Hello World!!!");
+    });
+
+    it("should respect point durability limitations", () => {
+      const pencil = new Pencil(4);
+      const paper = "An       a day keeps the doctor away";
+
+      const result = pencil.edit(paper, 3, "onion");
+
+      expect(result).toBe("An onio  a day keeps the doctor away");
+    });
+
+    it("should do nothing when position is out of bounds", () => {
+      const pencil = new Pencil();
+      const paper = "Hello World";
+
+      const result = pencil.edit(paper, -1, "text");
+      expect(result).toBe("Hello World");
+
+      const result2 = pencil.edit(paper, 100, "text");
+      expect(result2).toBe("Hello World");
+    });
+  });
 });
